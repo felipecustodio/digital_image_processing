@@ -13,7 +13,7 @@ import math
 import random
 import numpy as np
 import matplotlib.pyplot as plt
-
+plt.rcParams['font.family'] = 'Fira Code'
 
 def f1(f_image, C):
     for x in range(C):
@@ -51,7 +51,7 @@ def f5(f_image, C, S):
     y = 0
     f_image[x, y] = 1
     # TODO
-    for i in range(int(1 + (C**2/2))):
+    for i in range(int(1 + (C*C/2))):
         # passo em x
         dx = random.randint(-1, 1)
         x = ((x + dx) % C)
@@ -84,7 +84,9 @@ def rmse(predictions, targets):
 def main():
     # carregar imagem de referência
     filename = str(input()).rstrip()
-    R = np.load(filename)
+    # R = np.load(filename)
+    R = np.load("examples/"+filename)
+
 
     # parâmetros
     C = int(input())  # tamanho lateral da cena
@@ -110,18 +112,21 @@ def main():
     # gerar imagem digital g
     g_image = g(N, C, B)
 
+    plt.style.use('Solarize_Light2')
     # visualizar imagens
     plt.subplot(1, 2, 1)
     plt.title("Cena (F{})".format(f))
     plt.imshow(f_image, cmap='gray')
+    plt.axis('off')
 
     plt.subplot(1, 2, 2)
     plt.title("Imagem digital (G)")
     plt.imshow(g_image, cmap='gray')
+    plt.axis('off')
 
     plt.subplots_adjust(wspace=0.5)
     plt.suptitle('Trabalho 1', fontsize=16)
-    # plt.show()
+    plt.show()
 
     # erro médio quadrático entre g e a referência
     rmse(g_image, R)
