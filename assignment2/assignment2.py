@@ -37,6 +37,8 @@ def gamma_adjust(image, gamma):
 def superresolution(images):
     # dimensões da imagem (low)
     size = images[0].shape[0]
+    print("Size = {}".format(size))
+
     # inicializar imagem (high)
     super_image = np.zeros((size*2, size*2))
 
@@ -58,15 +60,16 @@ def superresolution(images):
             # cortar nova imagem em quadrante 2x2
             quadrant = super_image[current_row:current_row + size, current_col:current_col + size]
             # atribuir valores das imagens de baixa resolução
-            quadrant[0, 0] = images[0][current_row % size, current_col % size]
-            quadrant[0, 1] = images[2][current_row % size, current_col % size]
-            quadrant[1, 0] = images[1][current_row % size, current_col % size]
-            quadrant[1, 1] = images[3][current_row % size, current_col % size]
+            quadrant[0, 0] = images[0][int(current_row / 2), int(current_col / 2)]
+            quadrant[0, 1] = images[2][int(current_row / 2), int(current_col / 2)]
+            quadrant[1, 0] = images[1][int(current_row / 2), int(current_col / 2)]
+            quadrant[1, 1] = images[3][int(current_row / 2), int(current_col / 2)]
             # andar para o próximo quadrante
             current_col += 2
         current_row += 2
         current_col = 0
 
+    print(super_image.shape)
     return super_image
 
 

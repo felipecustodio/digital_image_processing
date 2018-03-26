@@ -26,12 +26,12 @@ current_row = 0
 current_col = 0
 while current_row <= size * 2 - 2:
     while current_col <= size * 2 - 2:
-        print(current_row, current_col)
         quadrant = super_image[current_row:current_row + size, current_col:current_col + size]
         quadrant[0, 0] = image1[current_row % size, current_col % size]
         quadrant[0, 1] = image3[current_row % size, current_col % size]
         quadrant[1, 0] = image2[current_row % size, current_col % size]
         quadrant[1, 1] = image4[current_row % size, current_col % size]
+        print(current_row / 2, current_col / 2)
         current_col += 2
     current_row += 2
     current_col = 0
