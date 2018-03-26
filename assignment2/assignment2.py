@@ -9,6 +9,7 @@ Aluno: Felipe Scrochio Custódio - 9442688
 Trabalho 1 - Gerador de Imagens
 """
 
+import math
 import imageio
 import numpy as np
 import matplotlib.pyplot as plt
@@ -16,22 +17,57 @@ import matplotlib.pyplot as plt
 
 def histogram_individual_transfer(image):
     # histograma acumulado
-    # equalizar imagem
     return image
 
 
 def histogram_joint_transfer(image):
     # histograma acumulado único
-    # equalizar todas as imagens i
     return image
 
 
-def gamma_adjust(image):
-    return image
+def gamma_adjust(image, gamma):
+    new_image = np.copy(image)
+    for x in range(image.shape[0]):
+        for y in range(image.shape[1]):
+            # aplicar ajuste gamma
+            new_image[x, y] = math.floor(255*((image[x, y]/255.0)**1/gamma))
+    return new_image
 
 
-def superresolution(image):
-    return image
+def superresolution(images):
+    # dimensões da imagem (low)
+    size = images[0].shape[0]
+    # inicializar imagem (high)
+    super_image = np.zeros((size*2, size*2))
+
+    """
+    Queremos andar na matriz (nova) com passos de 2x2 pixels
+    cada pixel da nova imagem equivale a um quadrante
+    formado pelas 4 imagens de baixa resolução.
+    Para não sair da matriz, voltamos para o início
+    do último quadrante.
+    Como em Python fazer uma atribuição array = outra_array
+    significa criar um ponteiro, podemos editar o quadrante
+    separadamente, garantindo que a imagem nova terá suas
+    posições corretas editadas.
+    """
+    current_row = 0
+    current_col = 0
+    while current_row <= size * 2 - 2:
+        while current_col <= size * 2 - 2:
+            # cortar nova imagem em quadrante 2x2
+            quadrant = super_image[current_row:current_row + size, current_col:current_col + size]
+            # atribuir valores das imagens de baixa resolução
+            quadrant[0, 0] = images[0][current_row % size, current_col % size]
+            quadrant[0, 1] = images[2][current_row % size, current_col % size]
+            quadrant[1, 0] = images[1][current_row % size, current_col % size]
+            quadrant[1, 1] = images[3][current_row % size, current_col % size]
+            # andar para o próximo quadrante
+            current_col += 2
+        current_row += 2
+        current_col = 0
+
+    return super_image
 
 
 def rmse(predictions, targets):
@@ -60,53 +96,53 @@ def main():
     filename_low = str(input()).rstrip()
     filename_high = str(input()).rstrip()
     method = int(input())
-    gamma = int(input())
+    gamma = float(input())
 
+    imglow = []
     # ler 4 imagens de baixa resolução
-    # TODO transformar para vetor de imagens
-    imglow1 = imageio.imread("tests/"+filename_low+"1.png")
-    imglow2 = imageio.imread("tests/"+filename_low+"2.png")
-    imglow3 = imageio.imread("tests/"+filename_low+"3.png")
-    imglow4 = imageio.imread("tests/"+filename_low+"4.png")
+    imglow.append(imageio.imread("tests/"+filename_low+"1.png"))
+    imglow.append(imageio.imread("tests/"+filename_low+"2.png"))
+    imglow.append(imageio.imread("tests/"+filename_low+"3.png"))
+    imglow.append(imageio.imread("tests/"+filename_low+"4.png"))
     # carregar imagem de alta resolução
-    imghigh = imageio.imread("tests/"+filename_high+".png")  # (Repo)
+    imghigh_ref = imageio.imread("tests/"+filename_high+".png")
 
-    # realce
-    if method != 0:
-        # gamma
-        if method == 1:
-            # histogram_individual_transfer(image)
-            pass
-        elif method == 2:
-            pass
-        elif method == 3:
-            pass
+    # equalizar imagens de baixa resolução
+    equalized = []
+    for image in imglow:
+        current = np.copy(image)
+        # realce
+        if method != 0:
+            # não utilizar realce se opção 0
+            if method == 1:
+                # função de transferência individual
+                pass
+            elif method == 2:
+                current = histogram_joint_transfer(image)
+                # função de transferência conjunta
+                pass
+            elif method == 3:
+                current = gamma_adjust(image, gamma)
+        equalized.append(current)
 
     # superresolução
-    new_high = superresolution(imglow1)
+    imghigh = superresolution(equalized)
+    print(type(imghigh))
 
-    # imglow = np.load(filename_low)  # (run.codes)
-    # imghigh = np.load(filename_high)  # (run.codes)
+    # exibir imagem final
+    plt.figure(figsize=(10, 10))
 
-    # exibir imagens
-    plt.figure(figsize=(8, 8))
-    plt.subplot(2, 2, 1)
-    plt.imshow(imglow1, cmap="gray")
+    plt.subplot(121)
+    plt.imshow(imghigh, cmap="gray")
     plt.axis('off')
-    plt.subplot(2, 2, 2)
-    plt.imshow(imglow2, cmap="gray")
-    plt.axis('off')
-    plt.subplot(2, 2, 3)
-    plt.imshow(imglow3, cmap="gray")
-    plt.axis('off')
-    plt.subplot(2, 2, 4)
-    plt.imshow(imglow4, cmap="gray")
+
+    plt.subplot(122)
+    plt.imshow(imghigh_ref, cmap="gray")
     plt.axis('off')
     plt.show()
 
-
-    # erro médio quadrático entre g e a referência
-    rmse(imghigh, imghigh)
+    # erro médio quadrático entre superres e a referência
+    rmse(imghigh, imghigh_ref)
 
 
 if __name__ == '__main__':
