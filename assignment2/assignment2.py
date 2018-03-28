@@ -12,17 +12,55 @@ Trabalho 1 - Gerador de Imagens
 import math
 import imageio
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 def histogram_individual_transfer(image):
-    # histograma acumulado
-    return image
+    # inicializar imagem equalizada
+    equalized = np.zeros(image.shape).astype(np.uint8)
+    # histograma de tons de cinza da imagem original
+    histogram, bins = np.histogram(image, range(256))
+    # calcular histograma acumulado
+    cumulative_hist = np.zeros((histogram.shape[0])).astype(int)
+    cumulative_hist[0] = histogram[0]
+    for i in range(1, 255):
+        cumulative_hist[i] = histogram[i] + cumulative_hist[i-1]
+    # aplicar equalização de histograma
+    for value in range(255):
+        # calcular novo valor
+        new_value = ((255)/float(image.shape[0] *  image.shape[1])) * cumulative_hist[value]
+        # substituir todos os pixels com valores 'value'
+        # pela sua frequência no histograma acumulado
+        equalized[np.where(image == value)] = new_value
+    return equalized
 
 
-def histogram_joint_transfer(image):
-    # histograma acumulado único
-    return image
+def histogram_joint_transfer(images):
+    # inicializar lista com as novas imagens equalizadas
+    equalized = []
+    for image in images:
+        equalized.append(np.zeros((image.shape)))
+
+    # inicializar histograma acumulado único
+    cumulative_hist = np.zeros(256).astype(int)
+    for image in images:
+        histogram, bins =  np.histogram(image, range(256))
+        # acumular valores do histograma atual no
+        # histograma acumulado único
+        for value, frequency in enumerate(histogram):
+            cumulative_hist[value] += frequency
+
+    """
+    Aplicar equalização utilizando histograma ac. único
+    assumindo que todas as imagens de baixa resolução
+    possuem o mesmo tamanho
+    """
+    for value in range(255):
+        new_value = ((255)/float(images[0].shape[0] * images[0].shape[1])) * cumulative_hist[value]
+        for index, image in enumerate(images):
+            equalized[index][np.where(image == value)] = new_value
+
+    return equalized
 
 
 def gamma_adjust(image, gamma):
@@ -37,7 +75,6 @@ def gamma_adjust(image, gamma):
 def superresolution(images):
     # dimensões da imagem (low)
     size = images[0].shape[0]
-    print("Size = {}".format(size))
 
     # inicializar imagem (high)
     super_image = np.zeros((size*2, size*2))
@@ -68,8 +105,6 @@ def superresolution(images):
             current_col += 2
         current_row += 2
         current_col = 0
-
-    print(super_image.shape)
     return super_image
 
 
@@ -119,30 +154,30 @@ def main():
             # não utilizar realce se opção 0
             if method == 1:
                 # função de transferência individual
-                pass
-            elif method == 2:
-                current = histogram_joint_transfer(image)
-                # função de transferência conjunta
+                current = histogram_individual_transfer(current)
                 pass
             elif method == 3:
                 current = gamma_adjust(image, gamma)
         equalized.append(current)
 
+    # função de transferência conjunta
+    if (method == 2):
+        equalized = histogram_joint_transfer(imglow)
+
     # superresolução
     imghigh = superresolution(equalized)
-    print(type(imghigh))
 
-    # exibir imagem final
-    plt.figure(figsize=(10, 10))
-
-    plt.subplot(121)
-    plt.imshow(imghigh, cmap="gray")
-    plt.axis('off')
-
-    plt.subplot(122)
-    plt.imshow(imghigh_ref, cmap="gray")
-    plt.axis('off')
-    plt.show()
+    # comparar com imagem final
+    # plt.figure(figsize=(10, 10))
+    #
+    # plt.subplot(121)
+    # plt.imshow(imghigh, cmap="gray")
+    # plt.axis('off')
+    #
+    # plt.subplot(122)
+    # plt.imshow(imghigh_ref, cmap="gray")
+    # plt.axis('off')
+    # plt.show()
 
     # erro médio quadrático entre superres e a referência
     rmse(imghigh, imghigh_ref)
