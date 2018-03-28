@@ -12,7 +12,7 @@ Trabalho 1 - Gerador de Imagens
 import math
 import imageio
 import numpy as np
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 
 def histogram_individual_transfer(image):
@@ -68,7 +68,7 @@ def gamma_adjust(image, gamma):
     for x in range(image.shape[0]):
         for y in range(image.shape[1]):
             # aplicar ajuste gamma
-            new_image[x, y] = math.floor(255*((image[x, y]/255.0)**1/gamma))
+            new_image[x, y] = math.floor(255 * (np.power((image[x, y]/255.0), (1/gamma))))
     return new_image
 
 
@@ -109,7 +109,10 @@ def superresolution(images):
 
 
 def rmse(predictions, targets):
-    error = (np.sqrt(((predictions - targets) ** 2).mean()))
+    error = ((predictions - targets) ** 2)
+    error = np.sum(error)
+    error *= 1 / (predictions.shape[0] * predictions.shape[1])
+    error = np.sqrt(error)
     print("{0:.4f}".format(error), end='')
 
 
@@ -168,16 +171,18 @@ def main():
     imghigh = superresolution(equalized)
 
     # comparar com imagem final
-    # plt.figure(figsize=(10, 10))
-    #
-    # plt.subplot(121)
-    # plt.imshow(imghigh, cmap="gray")
-    # plt.axis('off')
-    #
-    # plt.subplot(122)
-    # plt.imshow(imghigh_ref, cmap="gray")
-    # plt.axis('off')
-    # plt.show()
+    plt.figure(figsize=(100, 100))
+
+    plt.subplot(121)
+    plt.imshow(imghigh, cmap="gray")
+    plt.colorbar()
+    plt.axis('off')
+
+    plt.subplot(122)
+    plt.imshow(imghigh_ref, cmap="gray")
+    plt.colorbar()
+    plt.axis('off')
+    plt.show()
 
     # erro médio quadrático entre superres e a referência
     rmse(imghigh, imghigh_ref)
