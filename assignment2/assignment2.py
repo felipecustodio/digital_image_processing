@@ -12,6 +12,8 @@ Trabalho 1 - Gerador de Imagens
 import math
 import imageio
 import numpy as np
+
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 
@@ -116,14 +118,6 @@ def rmse(predictions, targets):
     print("{0:.4f}".format(error), end='')
 
 
-def submatrix(f, x, y, i):
-    sub = []
-    for row in range(x-i, x+i):
-        for col in range(y-i, y+i):
-            sub.append(f[row, col])
-    return sub
-
-
 def normalize(f):
     fmax = np.max(f)
     fmin = np.min(f)
@@ -160,7 +154,9 @@ def main():
                 current = histogram_individual_transfer(current)
                 pass
             elif method == 3:
+                # método de realce gamma
                 current = gamma_adjust(image, gamma)
+        current = normalize(current) # normalizar (0-255)
         equalized.append(current)
 
     # função de transferência conjunta
@@ -171,6 +167,7 @@ def main():
     imghigh = superresolution(equalized)
 
     # comparar com imagem final
+    sns.set()
     plt.figure(figsize=(100, 100))
 
     plt.subplot(121)
@@ -182,7 +179,8 @@ def main():
     plt.imshow(imghigh_ref, cmap="gray")
     plt.colorbar()
     plt.axis('off')
-    plt.show()
+    # salvar como imagem + método usado
+    plt.savefig("images/"+filename_high+"_"+str(method)+".png")
 
     # erro médio quadrático entre superres e a referência
     rmse(imghigh, imghigh_ref)
