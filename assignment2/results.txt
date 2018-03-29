@@ -1,0 +1,11 @@
+
+Running test 1: 5.4812
+Running test 2: 44.9060
+Running test 3: 67.8365
+Running test 4: 55.9544
+Running test 5: 94.8361
+Running test 6: 61.0576
+Running test 7: 98.7577
+Running test 8: 81.3104
+Running test 9: 56.4155
+Running test 10: 57.7983
