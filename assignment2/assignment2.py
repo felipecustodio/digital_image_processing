@@ -6,14 +6,12 @@ SCC0251 - Processamento de Imagens - 2018/1
 ICMC - USP
 Professor Moacir Ponti
 Aluno: Felipe Scrochio Custódio - 9442688
-Trabalho 1 - Gerador de Imagens
+Trabalho 2 - Realce e Superresolução
 """
 
 import math
 import imageio
 import numpy as np
-
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 
@@ -30,9 +28,12 @@ def histogram_individual_transfer(image):
     # aplicar equalização de histograma
     for value in range(255):
         # calcular novo valor
-        new_value = ((255)/float(image.shape[0] *  image.shape[1])) * cumulative_hist[value]
-        # substituir todos os pixels com valores 'value'
-        # pela sua frequência no histograma acumulado
+        size = image.shape[0] * image.shape[1]
+        new_value = ((255)/float(size)) * cumulative_hist[value]
+        """
+        substituir todos os pixels com valores 'value'
+        pela sua frequência no histograma acumulado
+        """
         equalized[np.where(image == value)] = new_value
     return equalized
 
@@ -46,7 +47,7 @@ def histogram_joint_transfer(images):
     # inicializar histograma acumulado único
     cumulative_hist = np.zeros(256).astype(int)
     for image in images:
-        histogram, bins =  np.histogram(image, range(256))
+        histogram, bins = np.histogram(image, range(256))
         # acumular valores do histograma atual no
         # histograma acumulado único
         for value, frequency in enumerate(histogram):
@@ -58,7 +59,8 @@ def histogram_joint_transfer(images):
     possuem o mesmo tamanho
     """
     for value in range(255):
-        new_value = ((255)/float(images[0].shape[0] * images[0].shape[1])) * cumulative_hist[value]
+        size = images[0].shape[0] * images[0].shape[1]
+        new_value = ((255)/float(size)) * cumulative_hist[value]
         for index, image in enumerate(images):
             equalized[index][np.where(image == value)] = new_value
 
@@ -156,7 +158,7 @@ def main():
             elif method == 3:
                 # método de realce gamma
                 current = gamma_adjust(image, gamma)
-        current = normalize(current) # normalizar (0-255)
+        current = normalize(current)  # normalizar (0-255)
         equalized.append(current)
 
     # função de transferência conjunta
@@ -167,8 +169,7 @@ def main():
     imghigh = superresolution(equalized)
 
     # comparar com imagem final
-    sns.set()
-    plt.figure(figsize=(100, 100))
+    # plt.figure(figsize=(100, 100))
 
     plt.subplot(121)
     plt.imshow(imghigh, cmap="gray")
