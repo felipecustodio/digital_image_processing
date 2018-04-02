@@ -12,7 +12,7 @@ Trabalho 2 - Realce e Superresolução
 import math
 import imageio
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 def histogram_individual_transfer(image):
@@ -136,13 +136,21 @@ def main():
     gamma = float(input())
 
     imglow = []
-    # ler 4 imagens de baixa resolução
-    imglow.append(imageio.imread("tests/"+filename_low+"1.png"))
-    imglow.append(imageio.imread("tests/"+filename_low+"2.png"))
-    imglow.append(imageio.imread("tests/"+filename_low+"3.png"))
-    imglow.append(imageio.imread("tests/"+filename_low+"4.png"))
+    # ler 4 imagens de baixa resolução (local)
+    # imglow.append(imageio.imread("tests/"+filename_low+"1.png"))
+    # imglow.append(imageio.imread("tests/"+filename_low+"2.png"))
+    # imglow.append(imageio.imread("tests/"+filename_low+"3.png"))
+    # imglow.append(imageio.imread("tests/"+filename_low+"4.png"))
+    # # carregar imagem de alta resolução
+    # imghigh_ref = imageio.imread("tests/"+filename_high+".png")
+
+    # ler 4 imagens de baixa resolução (run.codes)
+    imglow.append(imageio.imread(filename_low+"1.png"))
+    imglow.append(imageio.imread(filename_low+"2.png"))
+    imglow.append(imageio.imread(filename_low+"3.png"))
+    imglow.append(imageio.imread(filename_low+"4.png"))
     # carregar imagem de alta resolução
-    imghigh_ref = imageio.imread("tests/"+filename_high+".png")
+    imghigh_ref = imageio.imread(filename_high+".png")
 
     # equalizar imagens de baixa resolução
     equalized = []
@@ -170,18 +178,17 @@ def main():
 
     # comparar com imagem final
     # plt.figure(figsize=(100, 100))
-
-    plt.subplot(121)
-    plt.imshow(imghigh, cmap="gray")
-    plt.colorbar()
-    plt.axis('off')
-
-    plt.subplot(122)
-    plt.imshow(imghigh_ref, cmap="gray")
-    plt.colorbar()
-    plt.axis('off')
-    # salvar como imagem + método usado
-    plt.savefig("images/"+filename_high+"_"+str(method)+".png")
+    # plt.subplot(121)
+    # plt.imshow(imghigh, cmap="gray")
+    # plt.colorbar()
+    # plt.axis('off')
+    #
+    # plt.subplot(122)
+    # plt.imshow(imghigh_ref, cmap="gray")
+    # plt.colorbar()
+    # plt.axis('off')
+    # # salvar como imagem + método usado
+    # plt.savefig("images/"+filename_high+"_"+str(method)+".png")
 
     # erro médio quadrático entre superres e a referência
     rmse(imghigh, imghigh_ref)
