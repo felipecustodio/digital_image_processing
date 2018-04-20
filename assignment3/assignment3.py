@@ -12,7 +12,7 @@ Trabalho 3 - Filtragem 1D
 import math
 import imageio
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 def arbitrary_filter_spatial(image, filter_vector):
@@ -164,8 +164,8 @@ def main():
     filter_domain = int(input())
 
     # ler imagem original
-    image = imageio.imread("tests/"+filename_image)  # local
-    # image = imageio.imread(filename_image)  # run.codes
+    # image = imageio.imread("tests/"+filename_image)  # local
+    image = imageio.imread(filename_image)  # run.codes
 
     # formatar matriz da imagem como vetor
     vector = np.asarray(image).reshape(-1)
@@ -186,19 +186,19 @@ def main():
     filtered_image = np.reshape(vector, image.shape)
 
     # visualizar imagens
-    plt.subplot(1, 2, 1)
-    plt.imshow(image, cmap='gray')
-    plt.axis('off')
-
-    plt.subplot(1, 2, 2)
-    plt.imshow(filtered_image, cmap='gray')
-    plt.axis('off')
-
-    plt.subplots_adjust(wspace=0.5)
-    plt.savefig("images/result_" + str(filter_op) + "_" + str(filter_domain) + ".png")
+    # plt.subplot(1, 2, 1)
+    # plt.imshow(image, cmap='gray')
+    # plt.axis('off')
+    #
+    # plt.subplot(1, 2, 2)
+    # plt.imshow(filtered_image, cmap='gray')
+    # plt.axis('off')
+    #
+    # plt.subplots_adjust(wspace=0.5)
+    # plt.savefig("images/result_" + str(filter_op) + "_" + str(filter_domain) + ".png")
 
     # calcular erro entre imagem filtrada e original
-    print("result_{}_{}: ".format(filter_op, filter_domain), end='')
+    # print("result_{}_{}: ".format(filter_op, filter_domain), end='')
     rmse(filtered_image, image)
 
 
