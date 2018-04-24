@@ -6,4 +6,6 @@
                 printf "\nRunning test $i: " >> results.txt
                 # python assignment4.py < tests/$i.in >> results.txt
                 python assignment4.py < tests/$i.in 2>&1 | tee results.txt
+                printf ".....................\n"
+                printf ".....................\n" >> results.txt
         done
