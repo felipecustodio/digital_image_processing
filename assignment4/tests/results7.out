@@ -1,0 +1,17 @@
+Traceback (most recent call last):
+  File "assignment4.py", line 182, in main
+    dataset = np.load(dataset_filename)
+  File "/usr/lib/python3.6/site-packages/numpy/lib/npyio.py", line 372, in load
+    fid = open(file, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'mnist_6.npy'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "assignment4.py", line 232, in <module>
+    main()
+  File "assignment4.py", line 186, in main
+    dataset = np.load("tests/"+dataset_filename)
+  File "/usr/lib/python3.6/site-packages/numpy/lib/npyio.py", line 372, in load
+    fid = open(file, "rb")
+FileNotFoundError: [Errno 2] No such file or directory: 'tests/mnist_6.npy'

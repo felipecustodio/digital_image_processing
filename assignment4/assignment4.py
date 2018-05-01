@@ -156,7 +156,6 @@ def main():
     except Exception as e:
         image = imageio.imread("tests/"+image_filename)
 
-
     method = int(input())
     if (method == 1):
         line = input().split()
