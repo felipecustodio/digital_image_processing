@@ -21,9 +21,7 @@ def gerchberg_papoulis(image, mask, T):
     # obter fourier da máscara
     M = np.fft.fft2(mask)
     # encontrar magnitude máxima (máscara)
-    magnitude_mask = np.real(np.max(M))
-    # filtro de média 7x7
-    mean_filter = np.zeros((49), dtype=float)
+    magnitude_mask = np.max(M)
     # Gk[0] = imagem deteriorada
     # Gk[1...T] = iterações do algoritmo
     g = {}
@@ -33,7 +31,7 @@ def gerchberg_papoulis(image, mask, T):
         # obter fourier da imagem Gk
         g[k] = np.fft.fft2(g[k-1])
         # encontrar magnitude máxima (gk)
-        magnitude_gk = np.real(np.max(g[k]))
+        magnitude_gk = np.max(g[k])
         # filtrar (limitar frequências)
         for x in range(g[k].shape[0]):
             for y in range(g[k].shape[1]):
@@ -46,18 +44,23 @@ def gerchberg_papoulis(image, mask, T):
         # convolução com filtro de média
         for x in range(g[k].shape[0]):
             for y in range(g[k].shape[1]):
-                filter_pos = 0
                 # gerar filtro de média para posição (x,y)
+                # mean_filter = np.zeros((49), dtype=float)
+                mean_filter = 0
+                # filter_pos = 0
+                # andar 3 pixels em cada direção
+                # não ultrapassar tamanho máximo
                 for i in range(x-3, (x+4) % g[k].shape[0]):
                     for j in range(y-3, (y+4) % g[k].shape[1]):
-                        mean_filter[filter_pos] = (g[k][i][j])
-                        filter_pos += 1
+                        # mean_filter[filter_pos] = (g[k][i][j])
+                        mean_filter += (g[k][i][j])
+                        # filter_pos += 1
                 # encontrar média e atribuir ao pixel atual
-                g[k][x][y] = np.sum(mean_filter) / 49
+                g[k][x][y] = (mean_filter / 49)
         # renormalizar
         g[k] = normalize(g[k])
         # inserir pixels na estimativa k
-        g[k] = np.multiply((1-(mask/255)), g[0]) + np.multiply((mask/255), g[k])
+        g[k] = np.add((np.multiply((1-(mask/255)), g[0])),(np.multiply((mask/255), g[k])))
     # retornar imagem recuperada (última iteração)
     return g[T]
 
