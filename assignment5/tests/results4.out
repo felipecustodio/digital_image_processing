@@ -1,0 +1,29 @@
+Traceback (most recent call last):
+  File "assignment5.py", line 85, in main
+    original = imageio.imread(original_filename)
+  File "/usr/lib/python3.6/site-packages/imageio/core/functions.py", line 206, in imread
+    reader = read(uri, format, 'i', **kwargs)
+  File "/usr/lib/python3.6/site-packages/imageio/core/functions.py", line 117, in get_reader
+    request = Request(uri, 'r' + mode, **kwargs)
+  File "/usr/lib/python3.6/site-packages/imageio/core/request.py", line 128, in __init__
+    self._parse_uri(uri)
+  File "/usr/lib/python3.6/site-packages/imageio/core/request.py", line 271, in _parse_uri
+    raise FileNotFoundError("No such file: '%s'" % fn)
+FileNotFoundError: No such file: '/home/crochi/Dropbox/code/digital-image-processing/assignment5/julinho.png'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "assignment5.py", line 139, in <module>
+    main()
+  File "assignment5.py", line 88, in main
+    original = imageio.imread("tests/"+original_filename)
+  File "/usr/lib/python3.6/site-packages/imageio/core/functions.py", line 206, in imread
+    reader = read(uri, format, 'i', **kwargs)
+  File "/usr/lib/python3.6/site-packages/imageio/core/functions.py", line 117, in get_reader
+    request = Request(uri, 'r' + mode, **kwargs)
+  File "/usr/lib/python3.6/site-packages/imageio/core/request.py", line 128, in __init__
+    self._parse_uri(uri)
+  File "/usr/lib/python3.6/site-packages/imageio/core/request.py", line 271, in _parse_uri
+    raise FileNotFoundError("No such file: '%s'" % fn)
+FileNotFoundError: No such file: '/home/crochi/Dropbox/code/digital-image-processing/assignment5/tests/julinho.png'

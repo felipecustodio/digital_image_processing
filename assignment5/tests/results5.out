@@ -1,0 +1,3 @@
+assignment5.py:67: RuntimeWarning: invalid value encountered in true_divide
+  f = (f - fmin)/(fmax-fmin)
+13.13643
