@@ -23,7 +23,7 @@ def gerchberg_papoulis(image, mask, T):
     # encontrar magnitude máxima (máscara)
     magnitude_mask = np.real(np.max(M))
     # filtro de média 7x7
-    median_filter = np.zeros((49), dtype=float)
+    mean_filter = np.zeros((49), dtype=float)
     # Gk[0] = imagem deteriorada
     # Gk[1...T] = iterações do algoritmo
     g = {}
@@ -48,12 +48,12 @@ def gerchberg_papoulis(image, mask, T):
             for y in range(g[k].shape[1]):
                 filter_pos = 0
                 # gerar filtro de média para posição (x,y)
-                for i in range(x-3, (x+3) % g[k].shape[0]):
-                    for j in range(y-3, (y+3) % g[k].shape[1]):
-                        median_filter[filter_pos] = g[k][i][j]
+                for i in range(x-3, (x+4) % g[k].shape[0]):
+                    for j in range(y-3, (y+4) % g[k].shape[1]):
+                        mean_filter[filter_pos] = (g[k][i][j])
                         filter_pos += 1
                 # encontrar média e atribuir ao pixel atual
-                g[k][x][y] = np.mean(median_filter)
+                g[k][x][y] = np.sum(mean_filter) / 49
         # renormalizar
         g[k] = normalize(g[k])
         # inserir pixels na estimativa k
