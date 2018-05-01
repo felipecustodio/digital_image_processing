@@ -18,11 +18,12 @@ except Exception as e:
 
 
 def gerchberg_papoulis(image, mask, T):
-    M = np.real(np.fft.fft2(mask))
+    # obter fourier da máscara
+    M = np.fft.fft2(mask)
     # encontrar magnitude máxima (máscara)
-    magnitude_mask = np.max(M)
+    magnitude_mask = np.real(np.max(M))
     # filtro de média 7x7
-    median_filter = np.zeros((49))
+    median_filter = np.zeros((49), dtype=float)
     # Gk[0] = imagem deteriorada
     # Gk[1...T] = iterações do algoritmo
     g = {}
@@ -30,7 +31,6 @@ def gerchberg_papoulis(image, mask, T):
     # gerchberg-papoulis
     for k in range(1, T+1):
         # obter fourier da imagem Gk
-        # g[k] = np.real(np.fft.fft2(g[k-1]))
         g[k] = np.fft.fft2(g[k-1])
         # encontrar magnitude máxima (gk)
         magnitude_gk = np.real(np.max(g[k]))
@@ -55,7 +55,7 @@ def gerchberg_papoulis(image, mask, T):
                 # encontrar média e atribuir ao pixel atual
                 g[k][x][y] = np.mean(median_filter)
         # renormalizar
-        normalize(g[k])
+        g[k] = normalize(g[k])
         # inserir pixels na estimativa k
         g[k] = np.multiply((1-(mask/255)), g[0]) + np.multiply((mask/255), g[k])
     # retornar imagem recuperada (última iteração)
@@ -65,7 +65,7 @@ def gerchberg_papoulis(image, mask, T):
 def normalize(f):
     fmax = np.max(f)
     fmin = np.min(f)
-    f = (f - fmin)/(fmax-fmin)
+    f = (f-fmin)/(fmax-fmin)
     f = (f*255).astype(np.uint8)
     return f
 
