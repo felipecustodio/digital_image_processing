@@ -17,6 +17,19 @@ except Exception as e:
     pass
 
 
+def adaptive_filtering_local_noise_filter():
+    pass
+
+
+def adaptive_median_filter():
+    pass
+
+
+def contraharmonic_mean_filter():
+    pass
+
+
+
 def normalize(f):
     fmax = np.max(f)
     fmin = np.min(f)
@@ -33,11 +46,59 @@ def rmse(predictions, targets):
     print("{0:.5f}".format(error), end='')
 
 
+def plot(image1, image2):
+    try:
+        plt.subplot(1, 2, 1)
+        plt.imshow(image1, cmap='gray')
+        plt.axis('off')
+
+        plt.subplot(1, 2, 2)
+        plt.imshow(image2, cmap='gray')
+        plt.axis('off')
+        plt.subplots_adjust(wspace=0.5)
+
+        plt.show()
+    except Exception as e:
+        pass
+
+
 def main():
     # receber parâmetros
+    original_filename = str(input()).rstrip()
+    try:
+        # run.codes
+        original = imageio.imread(original_filename)
+    except Exception as e:
+        # local
+        original = imageio.imread("tests/"+original_filename)
+
+    noisy_filename = str(input()).rstrip()
+    try:
+        # run.codes
+        noisy = imageio.imread(noisy_filename)
+    except Exception as e:
+        # local
+        noisy = imageio.imread("tests/"+noisy_filename)
+
+    method = int(input())
+    filter_size = int(input())
+
+    # restauração
+    if (method == 1):
+        noisy_dist = int(input())
+        restored = option1()
+    elif (method == 2):
+        filter_size_max = int(input())
+        restored = option2()
+    elif (method == 3):
+        filter_order = int(input())
+        restored = option3()
+
+    # exibir imagens para comparação
+    plot(original, restored)
 
     # exibir erro entre original e recuperada
-    rmse(recovered, original)
+    rmse(restored, original)
 
 
 if __name__ == '__main__':
