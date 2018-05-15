@@ -40,23 +40,21 @@ def gerchberg_papoulis(image, mask, T):
                 if (g[k][x][y] <= (0.01 * magnitude_gk)):
                     g[k][x][y] = 0
         # obter transformada inversa
-        g[k] = np.real(np.fft.ifft2(g[k]))
+        g[k] = np.real(np.fft.ifft2(g[k])).astype(np.float64)
         # convolução com filtro de média
+        temp = np.copy(g[k])
         for x in range(g[k].shape[0]):
             for y in range(g[k].shape[1]):
                 # gerar filtro de média para posição (x,y)
-                # mean_filter = np.zeros((49), dtype=float)
                 mean_filter = 0
-                # filter_pos = 0
                 # andar 3 pixels em cada direção
                 # não ultrapassar tamanho máximo
                 for i in range(x-3, (x+4) % g[k].shape[0]):
                     for j in range(y-3, (y+4) % g[k].shape[1]):
-                        # mean_filter[filter_pos] = (g[k][i][j])
                         mean_filter += (g[k][i][j])
-                        # filter_pos += 1
                 # encontrar média e atribuir ao pixel atual
-                g[k][x][y] = (mean_filter / 49)
+                temp[x][y] = (mean_filter / 49)
+        g[k] = np.copy(temp)
         # renormalizar
         g[k] = normalize(g[k])
         # inserir pixels na estimativa k
